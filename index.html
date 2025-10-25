@@ -43,9 +43,9 @@ html, body {
 #screensaver {
   position: fixed;
   top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: black;
+  width: 100%;
+  height: 100%;
+  background: transparent;
   color: white;
   display: flex;
   align-items: center;
@@ -62,8 +62,17 @@ html, body {
 #screensaver.active {
   opacity: 1;
   pointer-events: auto;
+  
 }
 
+  #screensaver iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: transparent;
+}
+      
 @media (max-width: 768px) {
   .page {
     padding: 1.5rem;
@@ -81,7 +90,25 @@ html, body {
 <body>
 
   <!-- Screensaver Overlay -->
-  <div id="screensaver">Screensaver Mode (Touch or Click to return)</div>
+  <div id="screensaver" role="dialog" aria-modal="true" tabindex="-1">
+  <!-- interaction layer to detect touch -->
+  <div id="screensaver-overlay" style="
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 11;
+    background: transparent;
+  "></div>
+
+  <!-- iframe as screensaver -->
+  <iframe src="https://jj565656.github.io/Animation-Alt2/" title="Screensaver" style="
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 10;
+    position: relative;
+  "></iframe>
+</div>
 
   <!-- Carousel Container -->
   <div class="carousel" id="carousel">
@@ -126,7 +153,7 @@ function deactivateScreensaver() {
 
 function resetIdleTimer() {
   clearTimeout(idleTimer);
-  idleTimer = setTimeout(activateScreensaver, 30000);
+  idleTimer = setTimeout(activateScreensaver, 10000);
 }
 
 // --- Touch & Mouse Swipe ---
@@ -214,6 +241,15 @@ document.addEventListener('keydown', e => {
 // Init
 updateCarousel();
 resetIdleTimer();
+
+    document.getElementById('screensaver-overlay').addEventListener('click', () => {
+  deactivateScreensaver();
+});
+
+
+    document.getElementById('screensaver-overlay').addEventListener('touchstart', () => {
+  deactivateScreensaver();
+});
 
   </script>
 
